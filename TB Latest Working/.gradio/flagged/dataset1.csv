@@ -1,0 +1,8 @@
+audio_filepath,image_filepath,Speech to Text,Doctor's Response,output 2,timestamp
+.gradio\flagged\audio_filepath\4649d83ec444895439f8\audio.wav,.gradio\flagged\image_filepath\f3cd693f2c8c57bba085\images.jpeg," Hello Doctor, I have a blister on my lips and it burns when I eat. It also gives me discomfort. What should I do?","With what I see, you have a blister on your lip which is burning when you eat. It sounds like you could have a cold sore which can be caused by the herpes simplex virus.  It is best to keep it clean
+
+and dry and avoid touching it. Over-the-counter medications like Abreva or Do
+
+Please consult a doctor as it may be a symptom of something more serious   I can't diagnose you. 
+
+",,2025-05-05 00:07:01.085247
