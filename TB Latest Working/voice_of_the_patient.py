@@ -1,7 +1,7 @@
 # if you dont use pipenv uncomment the following:
-# from dotenv import load_dotenv
-# load_dotenv()
-
+from dotenv import load_dotenv
+load_dotenv()
+import os
 # Step1: Setup Audio recorder (ffmpeg & portaudio)
 # ffmpeg, portaudio, pyaudio
 import logging
@@ -9,6 +9,7 @@ import speech_recognition as sr
 from pydub import AudioSegment
 from io import BytesIO
 import requests
+SARVAM_API_KEY = os.getenv("SARVAM_API_KEY")
 
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 

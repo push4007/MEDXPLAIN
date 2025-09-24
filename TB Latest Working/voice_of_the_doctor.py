@@ -1,7 +1,7 @@
 # # if you don’t use pipenv uncomment the following:
 from dotenv import load_dotenv
 load_dotenv()
-
+import requests
 import os
 import subprocess
 import platform
@@ -76,28 +76,76 @@ def text_to_speech_with_elevenlabs(input_text, output_filepath_mp3="eleven_outpu
 # ---------------------------
 sarvam_client = SarvamAI(api_subscription_key=SARVAM_API_KEY)
 
-def text_to_speech_with_sarvam(input_text, output_filepath_wav="sarvam_output.wav", language_code="en-IN"):
-    # Call Sarvam TTS
-    response = sarvam_client.text_to_speech.convert(
-        text=input_text,
-        target_language_code=language_code,
-        model="bulbul:v2",
-        speaker="anushka"
+def translate_text_with_sarvam(
+    text: str,
+    source_language_code: str,
+    target_language_code: str
+) -> str:
+    """Call Sarvam’s Translate API and return the translated_text."""
+    r = requests.post(
+        "https://api.sarvam.ai/translate",
+        headers={
+            "api-subscription-key": "cf8a2ecf-da18-4aa5-b990-bf884bf2cc0a",
+        },
+        json={
+            "input": text,
+            "source_language_code": source_language_code,
+            "target_language_code": target_language_code
+        },
+        timeout=10
     )
+    r.raise_for_status()
+    return r.json()["translated_text"]
 
-    # Decode Base64 -> WAV
-    if not response.audios:
-        print("No audio returned from Sarvam.")
+def text_to_speech_with_sarvam(input_text, output_filepath_wav, language_code):
+
+    if language_code != "en-IN":
+        input_text = translate_text_with_sarvam(
+            text=input_text,
+            source_language_code="auto",
+            target_language_code=language_code
+        )
+    response = requests.post(
+    "https://api.sarvam.ai/text-to-speech", 
+    headers={
+        "api-subscription-key": "1246763d-8202-498e-b444-23810352380b"
+    },
+    json={
+        "target_language_code": language_code,
+        "text":input_text,
+        "model": "bulbul:v2",
+        "speaker": "anushka"
+    },
+)
+
+# Save audio to file
+    data = response.json()
+    print("Full API response:", data)
+    if not data.get("audios"):
+        print("No audio returned.")
         return None
 
-    b64_audio = response.audios[0]
+    # 2) Decode the first base64‑encoded WAV
+    b64_audio = data["audios"][0]
     wav_bytes = base64.b64decode(b64_audio)
 
     with open(output_filepath_wav, "wb") as f:
         f.write(wav_bytes)
-    print(f"Saved Sarvam WAV to {output_filepath_wav}")
-
-    play_audio(output_filepath_wav)
+    print(f" Saved WAV to {output_filepath_wav}")
+ 
+    os_name = platform.system()
+    try:
+        if os_name == "Darwin":  # macOS
+            subprocess.run(['afplay', output_filepath_wav])
+        elif os_name == "Windows":  # Windows
+            subprocess.run(['powershell', '-c', f'(New-Object Media.SoundPlayer "{output_filepath_wav}").PlaySync();'])
+        elif os_name == "Linux":  # Linux
+            subprocess.run(['aplay', output_filepath_wav])  # Alternative: use 'mpg123' or 'ffplay'
+        else:
+            raise OSError("Unsupported operating system")
+    except Exception as e:
+        print(f"An error occurred while trying to play the audio")
+    
     return output_filepath_wav
 
 

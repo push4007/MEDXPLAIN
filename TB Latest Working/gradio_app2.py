@@ -34,7 +34,7 @@ def process_inputs(audio_filepath, image_filepath, tts_engine, language_name):
 
     
 
-    doctor_response = analyze_image_with_query(system_prompt + stt_output, "llama-3.3-70b-versatile", enc)
+    doctor_response = analyze_image_with_query(system_prompt + stt_output,model= "meta-llama/llama-4-maverick-17b-128e-instruct", encoded_image=enc)
 
     if tts_engine == "Sarvam AI":
         audio_path = text_to_speech_with_sarvam(doctor_response, "final.wav", language_code=lang_code_sarvam)
