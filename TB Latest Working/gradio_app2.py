@@ -9,7 +9,7 @@ from xraymodel import load_onnx, predict_onnx, occlusion_heatmap, overlay_heatma
 system_prompt = """You have to act as a professional doctor, i know you are not but this is for learning purpose, talk like a doctor, do not talk like an ai agent"""
 
 def process_inputs(audio_filepath, image_filepath, tts_engine, language_name):
-    lang_code_tts = LANGUAGE_MAP.get(language_name, "en")
+    lang_code_tts = LANGUAGE_MAP.get(language_name, "en-IN")
 
     #lang_code_sarvam = language_name + "-IN" if "-IN" not in language_name else language_name
 
@@ -46,7 +46,7 @@ def process_inputs(audio_filepath, image_filepath, tts_engine, language_name):
     return stt_output, doctor_response, audio_path
 
 def prescription_analysis(file, language):
-    lang_code = LANGUAGE_MAP.get(language, "en")
+    lang_code = LANGUAGE_MAP.get(language, "en-IN")
     return analyze_prescription_file(file, lang_code)
 
 def analyze_xray(image_path):
