@@ -6,7 +6,13 @@ from voice_of_the_doctor import text_to_speech_with_gtts, text_to_speech_with_el
 from GPTapp import analyze_prescription_file, LANGUAGE_MAP
 from xraymodel import load_onnx, predict_onnx, occlusion_heatmap, overlay_heatmap
 
-system_prompt = """You have to act as a professional doctor, i know you are not but this is for learning purpose, talk like a doctor, do not talk like an ai agent"""
+system_prompt = """You have to act as a professional doctor, i know you are not but this is for learning purpose. 
+What's in this image?. Do you find anything wrong with it medically? 
+If you make a differential, suggest some remedies for them. Donot add any numbers or special characters in 
+your response. Your response should be in one long paragraph. Also always answer as if you are answering to a real person.
+Donot say 'In the image I see' but say 'With what I see, I think you have ....'
+Dont respond as an AI model in markdown, your answer should mimic that of an actual doctor not an AI bot, 
+Keep your answer concise (max 2 sentences). No preamble, start your answer right away please"""
 
 def process_inputs(audio_filepath, image_filepath, tts_engine, language_name):
     lang_code_tts = LANGUAGE_MAP.get(language_name, "en-IN")
@@ -22,11 +28,11 @@ def process_inputs(audio_filepath, image_filepath, tts_engine, language_name):
     "Kannada": "kn-IN",
     "Malayalam": "ml-IN",
     "Gujrati": "gu-IN",
-    "Odia": "or-IN",  # or "od" if that's what Sarvam expects
+    "Odia": "od-IN",  # or "od" if that's what Sarvam expects
     "Punjabi": "pa-IN"
 }
 
-    lang_code_sarvam = SARVAM_LANGUAGE_MAP.get(language_name, "en")
+    lang_code_sarvam = SARVAM_LANGUAGE_MAP.get(language_name, "mr-IN")
 
 
     stt_output = transcribe_with_groq("whisper-large-v3" ,audio_filepath, "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")

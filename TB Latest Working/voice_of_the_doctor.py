@@ -74,79 +74,82 @@ def text_to_speech_with_elevenlabs(input_text, output_filepath_mp3="eleven_outpu
 # ---------------------------
 # SarvamAI TTS + Translate
 # ---------------------------
-sarvam_client = SarvamAI(api_subscription_key=SARVAM_API_KEY)
+client = SarvamAI(api_subscription_key=SARVAM_API_KEY)
 
-def translate_text_with_sarvam(
-    text: str,
-    source_language_code: str,
-    target_language_code: str
-) -> str:
-    """Call Sarvam’s Translate API and return the translated_text."""
-    r = requests.post(
-        "https://api.sarvam.ai/translate",
-        headers={
-            "api-subscription-key": "cf8a2ecf-da18-4aa5-b990-bf884bf2cc0a",
-        },
-        json={
-            "input": text,
-            "source_language_code": source_language_code,
-            "target_language_code": target_language_code
-        },
-        timeout=10
-    )
-    r.raise_for_status()
-    return r.json()["translated_text"]
+def chunk_text(text, max_len=2000):
+    """Split text into safe chunks for Sarvam."""
+    return [text[i:i+max_len] for i in range(0, len(text), max_len)]
 
-def text_to_speech_with_sarvam(input_text, output_filepath_wav, language_code):
+def translate_text_with_sarvam(text, source_language_code="en-IN", target_language_code="hi-IN"):
+    """Translate text safely with Sarvam API."""
+    chunks = chunk_text(text)
+    translated_chunks = []
 
+    for chunk in chunks:
+        response = client.text.translate(
+            input=chunk,
+            source_language_code=source_language_code,
+            target_language_code=target_language_code,
+            mode="formal",
+            model="sarvam-translate:v1",
+            numerals_format="native",
+            speaker_gender="Male",
+            enable_preprocessing=False
+        )
+        # ✅ Access attribute, not dict key
+        translated_chunks.append(response.translated_text)
+
+    return " ".join(translated_chunks)
+
+
+
+def text_to_speech_with_sarvam(input_text: str, output_filepath_wav: str, language_code: str):
+    """Convert text to speech using Sarvam TTS and save as .wav file."""
+    # Translate if language is not English
     if language_code != "en-IN":
         input_text = translate_text_with_sarvam(
             text=input_text,
-            source_language_code="auto",
+            source_language_code="en-IN",
             target_language_code=language_code
         )
-    response = requests.post(
-    "https://api.sarvam.ai/text-to-speech", 
-    headers={
-        "api-subscription-key": "1246763d-8202-498e-b444-23810352380b"
-    },
-    json={
-        "target_language_code": language_code,
-        "text":input_text,
-        "model": "bulbul:v2",
-        "speaker": "anushka"
-    },
-)
 
-# Save audio to file
-    data = response.json()
-    print("Full API response:", data)
-    if not data.get("audios"):
+    response = client.text_to_speech.convert(
+        text=input_text,
+        target_language_code=language_code,
+        model="bulbul:v1",
+        speaker="maya"
+    )
+
+    # Debug print
+    print("Full API response:", response)
+
+    audios = response.audios or []
+    if not audios:
         print("No audio returned.")
         return None
 
-    # 2) Decode the first base64‑encoded WAV
-    b64_audio = data["audios"][0]
-    wav_bytes = base64.b64decode(b64_audio)
-
+    # Decode base64-encoded WAV
+    wav_bytes = base64.b64decode(audios[0])
     with open(output_filepath_wav, "wb") as f:
         f.write(wav_bytes)
-    print(f" Saved WAV to {output_filepath_wav}")
- 
+
+    print(f"✅ Saved WAV to {output_filepath_wav}")
+
+    # Try playing audio cross-platform
     os_name = platform.system()
     try:
         if os_name == "Darwin":  # macOS
             subprocess.run(['afplay', output_filepath_wav])
-        elif os_name == "Windows":  # Windows
-            subprocess.run(['powershell', '-c', f'(New-Object Media.SoundPlayer "{output_filepath_wav}").PlaySync();'])
-        elif os_name == "Linux":  # Linux
-            subprocess.run(['aplay', output_filepath_wav])  # Alternative: use 'mpg123' or 'ffplay'
+        elif os_name == "Windows":
+            subprocess.run(['powershell', '-c',
+                            f'(New-Object Media.SoundPlayer "{output_filepath_wav}").PlaySync();'])
+        elif os_name == "Linux":
+            subprocess.run(['aplay', output_filepath_wav])
         else:
-            raise OSError("Unsupported operating system")
-    except Exception as e:
-        print(f"An error occurred while trying to play the audio")
-    
-    return output_filepath_wav
+            raise OSError("Unsupported OS")
+    except Exception:
+        print("⚠️ Could not play audio automatically")
 
+    return output_filepath_wav
 
 # ---------------------------
