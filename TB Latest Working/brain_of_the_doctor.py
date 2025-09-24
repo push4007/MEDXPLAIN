@@ -1,12 +1,12 @@
 # if you dont use pipenv uncomment the following:
-# from dotenv import load_dotenv
-# load_dotenv()
+from dotenv import load_dotenv
+load_dotenv()
 
 #Step1: Setup GROQ API key
 import os
-
-GROQ_API_KEY = "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"
 #GROQ_API_KEY = "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"
+GROQ_API_KEY = os.getenv("GROQ_API_KEY")
+SARVAM_API_KEY = os.getenv("SARVAM_API_KEY")
 
 #Step2: Convert image to required format
 import base64

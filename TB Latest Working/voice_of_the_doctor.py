@@ -1,4 +1,4 @@
-# if you don’t use pipenv uncomment the following:
+# # if you don’t use pipenv uncomment the following:
 from dotenv import load_dotenv
 load_dotenv()
 
@@ -8,17 +8,16 @@ import platform
 import base64
 from gtts import gTTS
 from pydub import AudioSegment
-import elevenlabs
+# import elevenlabs
 from elevenlabs.client import ElevenLabs
 from sarvamai import SarvamAI
 
 # ---------------------------
 # Load API Keys from .env
 # ---------------------------
-ELEVENLABS_API_KEY = "sk_9045c45f8147630ce2d540ff73f6989378f5ec72b46e66a8" 
-#SARVAM_API_KEY = "cf8a2ecf-da18-4aa5-b990-bf884bf2cc0a" 
-SARVAM_API_KEY = "sk_jsjvvdcs_J3TX7fVA8FTHtojPeAsgT2q6"
-
+GROQ_API_KEY = os.getenv("GROQ_API_KEY")
+SARVAM_API_KEY = os.getenv("SARVAM_API_KEY")
+ELEVENLABS_API_KEY = "sk_9045c45f8147630ce2d540ff73f6989378f5ec72b46e66a8"
 # ---------------------------
 # Utility: Play audio (cross-platform)
 # ---------------------------

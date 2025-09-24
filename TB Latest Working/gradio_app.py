@@ -1,6 +1,6 @@
 # if you dont use pipenv uncomment the following:
-# from dotenv import load_dotenv
-# load_dotenv()
+from dotenv import load_dotenv
+load_dotenv()
 
 #VoiceBot UI with Gradio
 import os
@@ -15,11 +15,8 @@ from voice_of_the_patient import record_audio
 from voice_of_the_doctor import text_to_speech_with_gtts, text_to_speech_with_elevenlabs
 from GPTapp import analyze_prescription_file, LANGUAGE_MAP
 
-# Your API keys (replace with your actual keys)
-GROQ_API_KEY = "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"
-#GROQ_API_KEY = "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"
-#SARVAM_API_KEY = "cf8a2ecf-da18-4aa5-b990-bf884bf2cc0a"
-SARVAM_API_KEY = "sk_jsjvvdcs_J3TX7fVA8FTHtojPeAsgT2q6"
+GROQ_API_KEY = os.getenv("GROQ_API_KEY")
+SARVAM_API_KEY = os.getenv("SARVAM_API_KEY")
 
 system_prompt = """You have to act as a professional doctor, i know you are not but this is for learning purpose. 
 What's in this image?. Do you find anything wrong with it medically? 

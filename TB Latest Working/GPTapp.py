@@ -8,7 +8,7 @@ import google.generativeai as genai
 import mimetypes
 
 # --- API Key Configuration ---
-API_KEY = 'AIzaSyDIqVat1fIQ0vo65RJHN14fPUKObuz-V8M'  # Replace with your actual Gemini API key
+API_KEY = os.getenv("API_KEY")
 
 genai.configure(api_key=API_KEY)
 #translator = Translator()

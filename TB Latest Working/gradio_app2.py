@@ -6,7 +6,7 @@ from voice_of_the_doctor import text_to_speech_with_gtts, text_to_speech_with_el
 from GPTapp import analyze_prescription_file, LANGUAGE_MAP
 from xraymodel import load_onnx, predict_onnx, occlusion_heatmap, overlay_heatmap
 
-system_prompt = """You have to act as a professional doctor, i know you are not but this is for learning purpose..."""
+system_prompt = """You have to act as a professional doctor, i know you are not but this is for learning purpose, talk like a doctor, do not talk like an ai agent"""
 
 def process_inputs(audio_filepath, image_filepath, tts_engine, language_name):
     lang_code_tts = LANGUAGE_MAP.get(language_name, "en")
