@@ -17,7 +17,7 @@ from sarvamai import SarvamAI
 # ---------------------------
 GROQ_API_KEY = os.getenv("GROQ_API_KEY")
 SARVAM_API_KEY = os.getenv("SARVAM_API_KEY")
-ELEVENLABS_API_KEY = "sk_9045c45f8147630ce2d540ff73f6989378f5ec72b46e66a8"
+ELEVENLABS_API_KEY = os.getenv("ELEVENLABS_API_KEY")
 # ---------------------------
 # Utility: Play audio (cross-platform)
 # ---------------------------

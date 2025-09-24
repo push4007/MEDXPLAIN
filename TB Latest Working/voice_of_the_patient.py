@@ -49,11 +49,11 @@ audio_filepath = "patient_voice_test_for_patient.mp3"
 # Step2: Setup Speech to text–STT–model for transcription
 from groq import Groq
 
-GROQ_API_KEY = "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"
+# GROQ_API_KEY = "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"
 #GROQ_API_KEY = "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"
 stt_model = "whisper-large-v3"
 #SARVAM_API_KEY = "cf8a2ecf-da18-4aa5-b990-bf884bf2cc0a"
-SARVAM_API_KEY = "sk_jsjvvdcs_J3TX7fVA8FTHtojPeAsgT2q6"
+# SARVAM_API_KEY = "sk_jsjvvdcs_J3TX7fVA8FTHtojPeAsgT2q6"
 
 def transcribe_with_groq(stt_model, audio_filepath, GROQ_API_KEY):
     client = Groq(api_key=GROQ_API_KEY)
